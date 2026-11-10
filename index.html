@@ -61,15 +61,15 @@ a.card:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
       <span class="stat num" id="counterStat">&nbsp;</span>
       <span class="go">열기 →</span>
     </a>
-    <a class="card" href="https://claude.ai/artifact/MKVLmhrCEpQm58ejMvpfUq" style="--accent:var(--c2)">
+    <a class="card" href="/youngman/" style="--accent:var(--c2)">
       <span class="ico" aria-hidden="true">🐙</span>
       <h2>영맨 쭈갑 카운터</h2>
-      <p>영맨의 조과 카운터 (claude.ai)</p>
-      <span class="stat">&nbsp;</span>
+      <p>영맨의 조과 카운터. 신호 끊겨도 기록돼요</p>
+      <span class="stat num" id="ymStat">&nbsp;</span>
       <span class="go">열기 →</span>
     </a>
   </div>
-  <p class="foot">가계부와 방울 카운터는 링크가 있는 누구나 보고 고칠 수 있어요.</p>
+  <p class="foot">가계부와 두 카운터는 링크가 있는 누구나 보고 고칠 수 있어요.</p>
 </main>
 <script>
 (function(){
@@ -82,6 +82,10 @@ a.card:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
   fetch(API+'?store=trips',{cache:'no-store'}).then(function(r){return r.json()}).then(function(res){
     var t=res.trips||[]; var s=t.reduce(function(a,x){return a+(+x.total||0)},0);
     if(t.length) document.getElementById('counterStat').innerHTML=t.length+'<small>회 출조</small> '+s+'<small>수</small>';
+  }).catch(function(){});
+  fetch(API+'?store=ym',{cache:'no-store'}).then(function(r){return r.json()}).then(function(res){
+    var t=(res.ym&&res.ym.trips)||[]; var s=t.reduce(function(a,x){return a+(+x.total||0)},0);
+    if(t.length) document.getElementById('ymStat').innerHTML=t.length+'<small>회 출조</small> '+s+'<small>수</small>';
   }).catch(function(){});
 })();
 </script>

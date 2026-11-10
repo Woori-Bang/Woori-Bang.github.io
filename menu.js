@@ -5,7 +5,7 @@
     { href: '/', label: '🎣 밍밍 낚시', home: true },
     { href: '/jjugap/', label: '📒 쭈갑 가계부' },
     { href: '/jjugap/counter/', label: '🦑 방울 카운터' },
-    { href: 'https://claude.ai/artifact/MKVLmhrCEpQm58ejMvpfUq', label: '🐙 영맨 카운터', ext: true }
+    { href: '/youngman/', label: '🐙 영맨 카운터' }
   ];
   var path = location.pathname.replace(/index\.html$/, '');
   function active(l) {
