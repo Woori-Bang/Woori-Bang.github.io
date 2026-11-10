@@ -164,8 +164,6 @@ h1{font-family:var(--display);font-weight:400;font-size:26px;margin:0;letter-spa
     <div class="toggles">
       <label for="vibToggle">입력 시 진동<input type="checkbox" id="vibToggle"></label>
     </div>
-    <button class="btn" id="importBtn" type="button">이 기기의 이전 기록 시트로 올리기</button>
-    <p class="note" id="importNote">이 기기에 저장된 어종·오늘 기록·지난 출조를 구글 시트에 올림. 같은 기록은 같은 번호로 저장돼 여러 번 눌러도 중복 안 됨</p>
     <button class="btn danger" id="wipeBtn" type="button">지난 출조 기록 전체 삭제</button>
   </section>
 </div>
@@ -177,7 +175,6 @@ h1{font-family:var(--display);font-weight:400;font-size:26px;margin:0;letter-spa
 const KEY='youngman-jjugap-counter-v1';
 /* DB로 보낼 쓰기 대기열 (오프라인일 때 쌓였다가 연결되면 전송) */
 const QKEY='youngman-jjugap-db-queue-v1';
-const IKEY='youngman-jjugap-db-imported-v1';
 const COLORS=['var(--c1)','var(--c2)','var(--c3)','var(--c4)'];
 const def={species:[{id:'jju',name:'쭈꾸미'},{id:'gap',name:'갑오징어'}],log:[],start:null,trips:[],vib:true};
 let S,hadLocal=false;
@@ -370,21 +367,6 @@ $('addForm').addEventListener('submit',e=>{
 /* 진동 설정은 기기별 편의 기능 → 로컬에만 저장 */
 $('vibToggle').onchange=e=>{S.vib=e.target.checked;save();if(S.vib)buzz(30)};
 
-/* ---------- 이전 기록 1회 가져오기 (여러 번 눌러도 같은 문서 번호라 중복 없음) ---------- */
-$('importBtn').onclick=()=>{
-  syncSpeciesOrder();
-  const tid=S.start?tripIdOf(S.start):null;
-  S.log.forEach(l=>enqueue('set','catches/'+catchIdOf(l),catchDoc(l,tid||tripIdOf(S.log[0].t))));
-  S.trips.forEach(t=>enqueue('set','trips/'+tripIdOf(t.start),tripDoc(t)));
-  try{localStorage.setItem(IKEY,String(Date.now()))}catch(e){}
-  const msg=`어종 ${S.species.length} · 오늘 ${S.log.length}수 · 지난 출조 ${S.trips.length}회 올리기 예약`;
-  toast(msg);showImported();
-};
-function showImported(){
-  let t=null;try{t=localStorage.getItem(IKEY)}catch(e){}
-  if(t){const d=new Date(+t);$('importNote').textContent=`${d.getMonth()+1}월 ${d.getDate()}일 ${hm(+t)}에 올림. 다시 눌러도 중복 없이 덮어씀`}
-}
-
 /* ---------- 화면 켜짐 유지 ---------- */
 let lock=null;
 async function setWake(on){
@@ -424,7 +406,7 @@ function load(){
 let spAdopted=false;
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')load()});
 
-renderAll();showImported();
+renderAll();
 setInterval(renderStats,20000);
 load();
 })();
